@@ -1,25 +1,25 @@
 * CentOS重要目录说明
   根目录(/)下一般有如下目录
-  * bin/
+** bin/
 	可执行文件目录
-  * sbin/
+** sbin/
 	可执行文件目录
-  * usr/
-  * boot/
-  * etc/
-  * proc/
-  * dev/
-  * home/
-  * lib/ 或 lib64/
-  * lost+found/
-  * media/
-  * mnt/
-  * opt/
-  * root/
-  * selinux/
-  * srv/
-  * sys/
-  * tmp/
-  * var/
+** usr/
+** boot/
+** etc/
+** proc/
+** dev/
+** home/
+** lib/ 或 lib64/
+** lost+found/
+** media/
+** mnt/
+** opt/
+** root/
+** selinux/
+** srv/
+** sys/
+** tmp/
+** var/
 * 系统配置
 ** shell脚本
