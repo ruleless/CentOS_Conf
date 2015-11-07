@@ -1,23 +1,11 @@
-LIBDIR:=../../lib
-INCDIR:=../cppunit/include:$(LIBDIR)
+.Phony:all
+all:conf software
 
-VPATH:=$(INCDIR)
+conf:
+	cp ./bash/.bash_profile ~/
+	cp ./bash/.bashrc ~/
+	cp ./bash/.bash_logout ~/
+	cp ./gitconf/.gitconfig ~/
 
-CC:=clang++
-CXX:=clang++
-CXXFLAGS:=-g -Wall -I $(subst :, -I ,$(INCDIR))
-LDFLAGS:=-L $(LIBDIR) -lsnail -lrt -lcppunit -lpthread
-
-.Phony:all lib clean
-all:lib
-
-lib:
-cd $(LIBDIR) && $(MAKE)
-
-:.o
-$(CXX) $^ $(LDFLAGS) -o $@
-
-.o:.cpp
-
-clean:
-rm *.o
+software:
+	yum install -y gcc gcc-g++
