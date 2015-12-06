@@ -117,22 +117,20 @@
 	3. 安装到虚拟机中
 *** 镜像地址设置
 	可从 https://www.centos.org/download/mirrors/ 官网上查看有哪些可用的镜像地址。下面以将镜像地址设置为阿里云镜像来说明设置步骤：
-	* *备份* 当镜像失效时，可重新使用原始镜像
+	* step 1. *备份* 当镜像失效时，可重新使用原始镜像
 	  #+begin_src sh
-		mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+        mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
 	  #+end_src
-	* *下载新的CentOS-Base.repo 到/etc/yum.repos.d/* 此处用的是阿里云镜像
+	* step 2. *下载新的CentOS-Base.repo 到/etc/yum.repos.d/* 此处用的是阿里云镜像
 	  #+begin_src sh
-		# CentOS 5
-		wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo
-
-		# CentOS 6
-		wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
-
-		# CentOS 7
-		wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+        # CentOS 5
+        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo
+        # CentOS 6
+        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+        # CentOS 7
+        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 	  #+end_src
-	* *之后运行 yum clean all && yum makecache 生成缓存*
+	* step 3. *之后运行 yum clean all && yum makecache 生成缓存*
 
 	另外需要说明的是，很多系统镜像在安装完成后默认是没有开启网络功能的，我们需要配置并开启网络功能后才能执行此步操作。
 ** 网络配置和管理
