@@ -244,9 +244,9 @@
            yum -y install libXft-devel
 	     #+end_src
 	   * step 3. *编译、安装* 跟大部分 Linux 下开源软件的源码安装步骤一样：
-         1. $ ./configure
-		 2. $ make
-		 3. $ make install
+         1) $ ./configure
+		 2) $ make
+		 3) $ make install
 	 * yum 安装
 	   #+begin_src sh
          yum install -y emacs
