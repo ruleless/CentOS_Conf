@@ -55,36 +55,25 @@
 	此时，系统已经进入到了等待用户输入username和password的时候了，你已经可以用自己的帐号登入系统了。
 ** Linux 重要目录说明
    根目录(/)下一般有如下目录
-   - bin/
-
-	 可执行文件目录
-   - sbin/
-   	 与/bin/目录一样放置可执行文件，不过一般是root用户才用到的可执行文件。
-   - usr/
-   - boot/
-   - etc/
-   - proc/
-   - dev/
-   	 设备文件目录。
-   - home/
-   	 用户目录。
-   - lib/ 或 lib64/
-   	 库文件目录。
-   - lost+found/
-   	 回收目录。
-   - media/
-   - mnt/
-   	 挂载设备对应的设备文件。
-   - opt/
-   - root/
-   	 root用户的用户目录。
-   - selinux/
-   - srv/
-   - sys/
-   	 系统目录。
-   - tmp/
-   	 临时目录。该目录的访问权限为0777，也就是说任何用户对该目录都有全部的访问权限。
-   - var/
+   * bin/ 可执行文件目录
+   * sbin/ 与/bin/目录一样放置可执行文件，不过一般是root用户才用到的可执行文件。
+   * usr/
+   * boot/
+   * etc/
+   * proc/
+   * dev/ 设备文件目录。
+   * home/ 用户目录。
+   * lib/ 或 lib64/ 库文件目录。
+   * lost+found/ 回收目录。
+   * media/
+   * mnt/ 挂载设备对应的设备文件。
+   * opt/
+   * root/ root用户的用户目录。
+   * selinux/
+   * srv/
+   * sys/ 系统目录。
+   * tmp/ 临时目录。该目录的访问权限为0777，也就是说任何用户对该目录都有全部的访问权限。
+   * var/
 ** Make工具
    我们可以利用 Make 工具帮助我们自动完成大部分繁琐且重复的配置及安装工作。大致上， Make 程序依如下流程工作：
    #+begin_src sh
@@ -210,6 +199,7 @@
       yum install -y git
 	#+end_src
 **** 将本机的 SSH Key 注册到 GitHub
+	 具体步骤如下：
 	 * step 1. *查看本机是否已有 SSH Keys* 如果在目录 ~/.ssh 下有 id_rsa.pub 文件，则表明本机已有 SSH Keys，此时可以跳过第 2 步。
 	 * step 2. *生成新的 SSH Key*
 	   输入如下命令：
@@ -228,37 +218,37 @@
        ssh -T git@github.com
 	 #+end_src
 *** 编译器
-	*gcc/g++*
-	#+begin_src sh
-      yum install -y gcc gcc-g++
-	#+end_src
-
-	*clang*
-	早期的 CentOS 版本不能通过 yum 的方式安装 clang，所以只能通过源码安装。通过源码安装 clang 比较繁琐，依赖库多，编译也慢。而在 CentOS 7 中我们通过下面的命令就能完成 clang 的安装。
-	#+begin_src sh
-      yum install -y clang
-	#+end_src
+	* *gcc/g++* 安装命令：
+	  #+begin_src sh
+        yum install -y gcc gcc-g++
+	  #+end_src
+	* *clang* 早期的 CentOS 版本不能通过 yum 的方式安装 clang，所以只能通过源码安装。通过源码安装 clang 比较繁琐，依赖库多，编译也慢。而在 CentOS 7 中我们通过下面的命令就能完成 clang 的安装：
+	  #+begin_src sh
+        yum install -y clang
+	  #+end_src
 *** Emacs
 **** Emacs安装
 	 * 源码安装
-
-	   *源码下载* 打开链接 https://www.gnu.org/software/emacs/history.html ，下载 24.3 的版本。
-
-	   *依赖库安装* Emacs24.3 所需的依赖库如下：
-	   #+begin_src sh
-         yum -y groupinstall "Development Tools"
-         yum -y install gtk+-devel gtk2-devel
-         yum -y install libXpm-devel
-         yum -y install libpng-devel
-         yum -y install giflib-devel
-         yum -y install libtiff-devel libjpeg-devel
-         yum -y install ncurses-devel
-         yum -y install gpm-devel dbus-devel dbus-glib-devel dbus-python
-         yum -y install GConf2-devel pkgconfig
-         yum -y install libXft-devel
-	   #+end_src
-
-	   *源码编译、安装*
+	   * step 1. *源码下载* 打开链接 https://www.gnu.org/software/emacs/history.html ，下载 24.3 的版本。
+	   * step 2. *依赖库安装* Emacs24.3 所需的依赖库如下：
+	     #+begin_src sh
+           yum -y groupinstall "Development Tools"
+           yum -y install gtk+-devel gtk2-devel
+           yum -y install libXpm-devel
+           yum -y install libpng-devel
+           yum -y install giflib-devel
+           yum -y install libtiff-devel libjpeg-devel
+           yum -y install ncurses-devel
+           yum -y install gpm-devel dbus-devel dbus-glib-devel dbus-python
+           yum -y install GConf2-devel pkgconfig
+           yum -y install libXft-devel
+	     #+end_src
+	   * step 3. *编译、安装* 跟大部分 Linux 下开源软件的源码安装步骤一样：
+		 #+begin_src sh
+           ./configure
+           make
+           make install
+		 #+end_src
 	 * yum 安装
 	   #+begin_src sh
          yum install -y emacs
@@ -266,7 +256,7 @@
 **** Emacs 配置
 	 参见 https://github.com/ruleless/emacscfg
 *** 一键安装
-	我们可以通过 Make 实现软件的一键，包括 Emacs 的自动配置。下面给出 Makefile 脚本：
+	我们可以通过 Make 实现软件的一键安装，包括 Emacs 的自动配置。下面给出 Makefile 脚本：
 	#+begin_src makefile
       .Phony:all
       all:software emacsconf
@@ -281,8 +271,6 @@
 	#+end_src
 	观察到，我们并没有在 Makefile 中写入 Git 的安装脚本。这是因为我们的 Makefile 文件是托管到 GitHub 中的，所以，我们需要先安装好 Git 之后才能签出该脚本文件；所以在执行该脚本文件的时候 Git 已安装到了系统中。
 ** 用户自定义配置
-*** git
-	用户目录下有一个 .gitconfig 文件，我们可以通过修改该文件来实现我们的个性化定制。
 *** bash脚本
 	当我们执行命令 la ~ 时，会发下如下几个文件：
 	* *.bash\_profile* .bash\_profile是关联具体用户的，它会在相关用户登录时被执行。我们可以在该文件中写入脚本程序来实现个性化配置。另外，使用 source 命令可使变更立即生效。
@@ -328,6 +316,8 @@
         git add -A .
         git st
 	  #+end_src
+*** git
+	用户目录下有一个 .gitconfig 文件，我们可以通过修改该文件来实现我们的个性化定制。
 *** 一键配置
 	我们事先定义好个人的配置文件，然后，在 Makefile 写入安装程序，跟一键配置相关的 Makefile 脚本如下：
 	#+begin_src makefile
@@ -341,12 +331,12 @@
           cp ./gitconf/.gitconfig ~/
 	#+end_src
 ** 总结
-   在完成操作系统的安装后，我们还需进行一系列的配置及软件安装工作。操作步骤如下：
-   1. *网络配置。* CentOS 7 在 minimal 模式下安装完成时默认是关闭了网络功能的，我们需要将其打开并配置好网络地址，以便完成接下来的操作。
-   2. *yum 镜像地址设置。* 此步骤为可选，但在大陆使用原始国外镜像貌似有点慢，所以强烈推荐使用国内镜像。
-   3. *添加普通用户。* 就算是自己用来练习的操作系统也不要总是工作在 root 用户下，一是可以避免误操作，二是在生产环境下大部分人都没有服务器的根用户密码。添加了普通用户之后，我们可以通过远程工具连接服务器来完成接下来的操作。
-   4. *手工安装 Git，并将本机的 SSH Key 注册到 GitHub 上的个人账户上。*
-   5. *签出我个人的 CentOS_Conf 仓库* 地址: https://github.com/ruleless/CentOS_Conf
+   CentOS 是目前生产环境中常用的服务器系统，本文从开发人员角度出发，旨在构建基于 CentOS 7 的开发环境。在完成操作系统的安装后，构建开发环境的步骤如下：
+   * step 1. *网络配置。* CentOS 7 在 minimal 模式下安装完成时默认是关闭了网络功能的，我们需要将其打开并配置好网络地址，以便完成接下来的操作。
+   * step 2. *yum 镜像地址设置。* 此步骤为可选，但在大陆使用原始的国外镜像地址貌似有点慢，所以强烈推荐使用国内镜像。
+   * step 3. *添加普通用户。* 就算是自己用来练习的操作系统也不要总是工作在 root 用户下，一是可以避免误操作，二是在生产环境下大部分人都没有服务器的根用户密码。添加了普通用户之后，我们可以通过远程工具连接服务器来完成接下来的操作。
+   * step 4. *手工安装 Git，并将本机的 SSH Key 注册到 GitHub 上的个人账户上。*
+   * step 5. *签出我个人的 CentOS_Conf 仓库* 地址: https://github.com/ruleless/CentOS_Conf ，该仓库下有我已经写好的 Makefile 安装脚本，执行 Make 即可进入自动安装。
 
    执行完上面的操作之后，我们还需要手工安装一些必须得通过源码安装的软件。当前主要包括：
-   1. GNU Global
+   *. *GNU Global* GNU GLOBAL is a source code tagging system that works the same way across diverse environments, such as Emacs editor, Vi editor, Less viewer, Bash shell, various web browsers, etc.
