@@ -347,7 +347,7 @@
    2. *yum 镜像地址设置。* 此步骤为可选，但在大陆使用原始国外镜像貌似有点慢，所以强烈推荐使用国内镜像。
    3. *添加普通用户。* 就算是自己用来练习的操作系统也不要总是工作在 root 用户下，一是可以避免误操作，二是在生产环境下大部分人都没有服务器的根用户密码。添加了普通用户之后，我们可以通过远程工具连接服务器来完成接下来的操作。
    4. *手工安装 Git，并将本机的 SSH Key 注册到 GitHub 上的个人账户上。*
-   5. *签出我个人的 CentOS_Conf 仓库，并在相应目录下执行Make*
+   5. *签出我个人的 CentOS_Conf 仓库* 脚本如下：
 	  #+begin_src sh
         git clone git@github.com:ruleless/CentOS_Conf.git
         cd CentOS_Conf
