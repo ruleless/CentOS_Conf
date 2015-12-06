@@ -211,24 +211,18 @@
       yum install -y git
 	#+end_src
 **** 将本机的 SSH Key 注册到 GitHub
-	 1. 查看本机是否已有 SSH Keys
-
-		如果在目录 ~/.ssh 下有 id_rsa.pub 文件，则表明本机已有 SSH Keys，此时可以跳过第 2 步。
-
-	 2. 生成新的 SSH Key
-
-		输入如下命令：
-		#+begin_src sh
-          ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-		#+end_src
-		按照提示一步步往下走即可。
-
-	 3. 将 SSH Key 添加到 ssh-agent
-		#+begin_src sh
-          ssh-add ~/.ssh/id_rsa
-		#+end_src
-
-	 4. 将 SSH Key 添加到你的 GitHub 账户
+	 * step 1. *查看本机是否已有 SSH Keys* 如果在目录 ~/.ssh 下有 id_rsa.pub 文件，则表明本机已有 SSH Keys，此时可以跳过第 2 步。
+	 * step 2. *生成新的 SSH Key*
+	   输入如下命令：
+	   #+begin_src sh
+         ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+	   #+end_src
+	   按照提示一步步往下走即可。
+	 * step 3. *将 SSH Key 添加到 ssh-agent*
+	   #+begin_src sh
+         ssh-add ~/.ssh/id_rsa
+	   #+end_src
+	 * step 4. *将 SSH Key 添加到你的 GitHub 账户*
 
 	 执行完上面的操作我们就可以连接到个人的 GitHub 仓库了，我们可以先用如下命令测试一下：
 	 #+begin_src sh
