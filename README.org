@@ -256,14 +256,14 @@
 	我们可以通过 Make 实现软件的一键安装，包括 Emacs 的自动配置。下面给出 Makefile 脚本：
 	#+begin_src makefile
       .Phony:all
-      all:software emacsconf
+      all:software
 
       software:
           yum install -y gcc gcc-g++
           yum install -y clang
           yum install -y emacs
 
-      emacsconf:
+      emacs:
           cd emacscfg && $(MAKE)
 	#+end_src
 	观察到，我们并没有在 Makefile 中写入 Git 的安装脚本。这是因为我们的 Makefile 文件是托管到 GitHub 中的，所以，我们需要先安装好 Git 之后才能签出该脚本文件；所以在执行该脚本文件的时候 Git 已安装到了系统中。
