@@ -1,5 +1,5 @@
 .Phony:all
-all:conf software emacsconf
+all:conf software
 
 conf:
 	cp ./bash/.bash_profile ~/
@@ -12,7 +12,7 @@ software:
 	yum install -y clang
 	yum install -y emacs
 
-emacsconf:
+emacs:
 	cd emacscfg && $(MAKE)
 
 emacsdep:
