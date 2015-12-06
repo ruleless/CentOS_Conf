@@ -244,11 +244,9 @@
            yum -y install libXft-devel
 	     #+end_src
 	   * step 3. *编译、安装* 跟大部分 Linux 下开源软件的源码安装步骤一样：
-		 #+begin_src sh
-           ./configure
-           make
-           make install
-		 #+end_src
+         1. $ ./configure
+		 2. $ make
+		 3. $ make install
 	 * yum 安装
 	   #+begin_src sh
          yum install -y emacs
@@ -331,7 +329,7 @@
           cp ./gitconf/.gitconfig ~/
 	#+end_src
 ** 总结
-   CentOS 是目前生产环境中常用的服务器系统，本文从开发人员角度出发，旨在构建基于 CentOS 7 的开发环境。在完成操作系统的安装后，构建开发环境的步骤如下：
+   CentOS 是目前生产环境中常用的服务器系统，本文从开发人员角度出发，旨在构建基于 CentOS 7 的开发环境。本文所涉及的各个操作，步骤总结如下：
    * step 1. *网络配置。* CentOS 7 在 minimal 模式下安装完成时默认是关闭了网络功能的，我们需要将其打开并配置好网络地址，以便完成接下来的操作。
    * step 2. *yum 镜像地址设置。* 此步骤为可选，但在大陆使用原始的国外镜像地址貌似有点慢，所以强烈推荐使用国内镜像。
    * step 3. *添加普通用户。* 就算是自己用来练习的操作系统也不要总是工作在 root 用户下，一是可以避免误操作，二是在生产环境下大部分人都没有服务器的根用户密码。添加了普通用户之后，我们可以通过远程工具连接服务器来完成接下来的操作。
@@ -339,4 +337,4 @@
    * step 5. *签出我个人的 CentOS_Conf 仓库* 地址: https://github.com/ruleless/CentOS_Conf ，该仓库下有我已经写好的 Makefile 安装脚本，执行 Make 即可进入自动安装。
 
    执行完上面的操作之后，我们还需要手工安装一些必须得通过源码安装的软件。当前主要包括：
-   *. *GNU Global* GNU GLOBAL is a source code tagging system that works the same way across diverse environments, such as Emacs editor, Vi editor, Less viewer, Bash shell, various web browsers, etc.
+   * *GNU Global* GNU GLOBAL is a source code tagging system that works the same way across diverse environments, such as Emacs editor, Vi editor, Less viewer, Bash shell, various web browsers, etc.
