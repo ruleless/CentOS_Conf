@@ -1,0 +1,18 @@
+[user]
+	name = ruleless
+	email = ruleless@126.com
+[alias]
+	st = status
+	sb = submodule
+	ci = commit
+	co = checkout
+	br = branch
+	di = diff
+	log1 = log --pretty=raw --graph --color --stat
+	df = diff --color
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = true
+	ui = false

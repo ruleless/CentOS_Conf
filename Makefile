@@ -1,23 +1,28 @@
-LIBDIR:=../../lib
-INCDIR:=../cppunit/include:$(LIBDIR)
+.Phony:all
+all:conf software emacsconf
 
-VPATH:=$(INCDIR)
+conf:
+	cp ./bash/.bash_profile ~/
+	cp ./bash/.bashrc ~/
+	cp ./bash/.bash_logout ~/
+	cp ./gitconf/.gitconfig ~/
 
-CC:=clang++
-CXX:=clang++
-CXXFLAGS:=-g -Wall -I $(subst :, -I ,$(INCDIR))
-LDFLAGS:=-L $(LIBDIR) -lsnail -lrt -lcppunit -lpthread
+software:
+	yum install -y gcc gcc-g++
+	yum install -y clang
+	yum install -y emacs
 
-.Phony:all lib clean
-all:lib
+emacsconf:
+	cd emacscfg && $(MAKE)
 
-lib:
-cd $(LIBDIR) && $(MAKE)
-
-:.o
-$(CXX) $^ $(LDFLAGS) -o $@
-
-.o:.cpp
-
-clean:
-rm *.o
+emacsdep:
+	yum -y groupinstall "Development Tools"
+	yum -y install gtk+-devel gtk2-devel
+	yum -y install libXpm-devel
+	yum -y install libpng-devel
+	yum -y install giflib-devel
+	yum -y install libtiff-devel libjpeg-devel
+	yum -y install ncurses-devel
+	yum -y install gpm-devel dbus-devel dbus-glib-devel dbus-python
+	yum -y install GConf2-devel pkgconfig
+	yum -y install libXft-devel
