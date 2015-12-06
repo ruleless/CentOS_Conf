@@ -1,5 +1,5 @@
 .Phony:all
-all:conf software
+all:conf software emacsconf
 
 conf:
 	cp ./bash/.bash_profile ~/
@@ -9,6 +9,11 @@ conf:
 
 software:
 	yum install -y gcc gcc-g++
+	yum install -y clang
+	yum install -y emacs
+
+emacsconf:
+	cd emacscfg && $(MAKE)
 
 emacsdep:
 	yum -y groupinstall "Development Tools"
