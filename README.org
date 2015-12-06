@@ -84,14 +84,70 @@
 *** tmp/
    	临时目录。该目录的访问权限为0777，也就是说任何用户对该目录都有全部的访问权限。
 *** var/
+** Make工具
+   我们可以利用 Make 工具帮助我们自动完成大部分繁琐且重复的配置及安装工作。大致上， Make 程序依如下流程工作：
+   #+begin_src sh
+     if target is a leaf then
+         return
+     fi
+
+     bExecuteCommand = false
+     if target isn not exists then
+         bExecuteCommand = true
+     fi
+
+     for file in all dependency files; do
+         make(file)
+         if file is newer than target then
+             bExecuteCommand = true
+         fi
+     done
+
+     if bExecuteCommand then
+         Execute Command
+     fi
+   #+end_src
+** 操作系统安装
+*** 安装镜像获取
+	可从 https://www.centos.org/download/ 下载 CentOS 安装镜像。我用的是 CentOS 7。
+*** 操作系统安装
+	可选方式有：
+	1. DVD光盘安装
+	2. USB安装
+	3. 安装到虚拟机中
+*** 镜像地址设置
+	可从 https://www.centos.org/download/mirrors/ 官网上查看有哪些可用的镜像地址。下面以将镜像地址设置为阿里云镜像来说明设置步骤：
+	1. 备份
+	   #+begin_src sh
+		 mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+	   #+end_src
+	2. 下载新的CentOS-Base.repo 到/etc/yum.repos.d/
+	   #+begin_src sh
+		 # CentOS 5
+		 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo
+
+		 # CentOS 6
+		 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+
+		 # CentOS 7
+		 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+	   #+end_src
+	3. 之后运行 yum clean all && yum makecache 生成缓存
+
+	另外需要说明的是，很多系统镜像在安装完成后默认是没有开启网络功能的，我们需要配置并开启网络功能后才能执行此步操作。
 ** 网络配置和管理
+   安装 CentOS 7 时，选择了 minimal install 的话，是没有安装网络组件的。所以，ifconfig 之类的命令式没有的，在配置好网络功能后可以通过如下命令来安装网络组件：
+   #+begin_src sh
+     yum install -y net-tools
+   #+end_src
+   另外也可以用 ip 命令来替代 ifconfig 使用。
 *** 配置IP地址
 	目录/etc/sysconfig/network-scripts下有名为ifcfg-eth0的脚本，它配置了网络接口eth0的各项属性
 	#+begin_src sh
       HWADDR=00:0C:29:D4:D9:DD
       TYPE=Ethernet
       UUID=b9736563-22f5-42d5-9f41-9cd6c3e22683
-      ONBOOT=yes
+      ONBOOT=yes # 操作系统安装完成时，该选项默认为no，我们需要手工改为yes才能启用系统的网络功能
       NM_CONTROLLED=yes
       BOOTPROTO=static # 指定IP地址为静态IP(static)或动态IP(DHCP)
       IPADDR=192.168.1.109 # IP地址(BOOTPROTO=static时有效)
@@ -105,6 +161,7 @@
       nameserver 202.96.128.166
       nameserver 202.96.134.133
 	#+end_src
+	初始时，该文件为空，所以，如果我们在一开始就将网络接口配置为 static 方式(见 /etc/sysconfig/network-scripts/ifcfg-etho0 文件的 BOOTPROTO 选项)，那么，我们还是不能访问外网。所以，我们可以先将 BOOTPROTO 选项配置为 dhcp，等到我们执行 /etc/init.d/network restart 命令自动生成了 DNS 服务器地址后，再将 BOOTPROTO 改为 static。
 *** 主机名称配置
 	vi /etc/sysconfig/network
 	#+begin_src sh
@@ -112,7 +169,7 @@
       HOSTNAME=liuy
 	#+end_src
 *** 常用命令
-**** network restart
+**** /etc/init.d/network restart
 	 若重新配置了IP和DNS可使用该命令使修改生效。
 **** netstat
 	 netstat命令用于显示网络连接、路由表和网络接口的信息，可以让用户查看系统当前的网络连接情况。
@@ -126,4 +183,182 @@
 	 traceroute命令用于追踪网络包的发送路径。
 **** tcpdump
 	 用于网络抓包。
+** 用户管理
+   在安装好操作系统并配置完网络地址后，接下来，我们在系统中添加普通用户。
+
+   添加用户的命令如下：
+   #+begin_src sh
+     useradd user
+   #+end_src
+
+   之后为该用户设置密码：
+   #+begin_src sh
+     passwd user
+   #+end_src
+
+   如果我们需要查看系统下的所有用户或组信息可用如下命令：
+   | cat /etc/passwd | 查看所有用户信息 |
+   | cat /etc/group  | 查看所有组信息   |
+
+   有时候，普通用户需要临时做一些超级用户才有权限做的事情，例如，安装软件。我们可以通过赋予普通用户 sudoer 身份的方式来达到此目的。赋予普通用户 sudoer 身份只需在 /etc/sudoer 添加一行：
+   #+begin_src sh
+     user    ALL=(ALL)    ALL
+   #+end_src
+** 软件安装
+*** 版本管理软件
+**** Git安装
+	#+begin_src sh
+      yum install -y git
+	#+end_src
+**** 将本机的 SSH Key 注册到 GitHub
+	 1. 查看本机是否已有 SSH Keys
+
+		如果在目录 ~/.ssh 下有 id_rsa.pub 文件，则表明本机已有 SSH Keys，此时可以跳过第 2 步。
+
+	 2. 生成新的 SSH Key
+
+		输入如下命令：
+		#+begin_src sh
+          ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+		#+end_src
+		按照提示一步步往下走即可。
+
+	 3. 将 SSH Key 添加到 ssh-agent
+		#+begin_src sh
+          ssh-add ~/.ssh/id_rsa
+		#+end_src
+
+	 4. 将 SSH Key 添加到你的 GitHub 账户
+
+	 执行完上面的操作我们就可以连接到个人的 GitHub 仓库了，我们可以先用如下命令测试一下：
+	 #+begin_src sh
+       ssh -T git@github.com
+	 #+end_src
+*** 编译器
+	*gcc/g++*
+	#+begin_src sh
+      yum install -y gcc gcc-g++
+	#+end_src
+
+	*clang*
+	早期的 CentOS 版本不能通过 yum 的方式安装 clang，所以只能通过源码安装。通过源码安装 clang 比较繁琐，依赖库多，编译也慢。而在 CentOS 7 中我们通过下面的命令就能完成 clang 的安装。
+	#+begin_src sh
+      yum install -y clang
+	#+end_src
+*** Emacs
+**** Emacs安装
+	 * 源码安装
+
+	   *源码下载* 打开链接 https://www.gnu.org/software/emacs/history.html ，下载 24.3 的版本。
+
+	   *依赖库安装* Emacs24.3 所需的依赖库如下：
+	   #+begin_src sh
+         yum -y groupinstall "Development Tools"
+         yum -y install gtk+-devel gtk2-devel
+         yum -y install libXpm-devel
+         yum -y install libpng-devel
+         yum -y install giflib-devel
+         yum -y install libtiff-devel libjpeg-devel
+         yum -y install ncurses-devel
+         yum -y install gpm-devel dbus-devel dbus-glib-devel dbus-python
+         yum -y install GConf2-devel pkgconfig
+         yum -y install libXft-devel
+	   #+end_src
+
+	   *源码编译、安装*
+	 * yum 安装
+	   #+begin_src sh
+         yum install -y emacs
+	   #+end_src
+**** Emacs 配置
+	 参见 https://github.com/ruleless/emacscfg
+*** 一键安装
+	我们可以通过 Make 实现软件的一键，包括 Emacs 的自动配置。下面给出 Makefile 脚本：
+	#+begin_src makefile
+      .Phony:all
+      all:software emacsconf
+
+      software:
+          yum install -y gcc gcc-g++
+          yum install -y clang
+          yum install -y emacs
+
+      emacsconf:
+          cd emacscfg && $(MAKE)
+	#+end_src
+	观察到，我们并没有在 Makefile 中写入 Git 的安装脚本。这是因为我们的 Makefile 文件是托管到 GitHub 中的，所以，我们需要先安装好 Git 之后才能签出该脚本文件；所以在执行该脚本文件的时候 Git 已安装到了系统中。
 ** 用户自定义配置
+*** git
+	用户目录下有一个 .gitconfig 文件，我们可以通过修改该文件来实现我们的个性化定制。
+*** bash脚本
+	当我们执行命令 la ~ 时，会发下如下几个文件：
+	* *.bash\_profile* .bash\_profile是关联具体用户的，它会在相关用户登录时被执行。我们可以在该文件中写入脚本程序来实现个性化配置。另外，使用 source 命令可使变更立即生效。
+	  #+begin_src sh
+        # .bash_profile
+
+        # Get the aliases and functions
+        if [ -f ~/.bashrc ]; then
+                . ~/.bashrc
+        fi
+
+        # User specific environment and startup programs
+        PATH=$PATH:$HOME/bin:.
+        export PATH
+
+        # ssh start
+        eval $(ssh-agent -s)
+        ssh-add ~/.ssh/id_rsa
+	  #+end_src
+	* *.bashrc* 该文件实际是通过.bash\_profile来加载的，主要用于加载系统 /etc/bashrc 脚本以及配置命令别名等。
+	  #+begin_src sh
+        # .bashrc
+
+        # Source global definitions
+        if [ -f /etc/bashrc ]; then
+                . /etc/bashrc
+        fi
+
+        alias ll="ls -ls"
+        alias la="ls -a"
+        alias pa="ps -ejf"
+        alias g="git"
+
+        # User specific aliases and functions
+	  #+end_src
+	* *.bash\_logout*
+	  #+begin_src sh
+        # ~/.bash_logout
+	  #+end_src
+	* *.bash\_history* 记录相关用户的历史命令。
+	  #+begin_src sh
+        git st
+        git add -A .
+        git st
+	  #+end_src
+*** 一键配置
+	我们事先定义好个人的配置文件，然后，在 Makefile 写入安装程序，跟一键配置相关的 Makefile 脚本如下：
+	#+begin_src makefile
+      .Phony:all
+      all:conf
+
+      conf:
+          cp ./bash/.bash_profile ~/
+          cp ./bash/.bashrc ~/
+          cp ./bash/.bash_logout ~/
+          cp ./gitconf/.gitconfig ~/
+	#+end_src
+** 总结
+   在完成操作系统的安装后，我们还需进行一系列的配置及软件安装工作。操作步骤如下：
+   1. *网络配置。* CentOS 7 在 minimal 模式下安装完成时默认是关闭了网络功能的，我们需要将其打开并配置好网络地址，以便完成接下来的操作。
+   2. *yum 镜像地址设置。* 此步骤为可选，但在大陆使用原始国外镜像貌似有点慢，所以强烈推荐使用国内镜像。
+   3. *添加普通用户。* 就算是自己用来练习的操作系统也不要总是工作在 root 用户下，一是可以避免误操作，二是在生产环境下大部分人都没有服务器的根用户密码。添加了普通用户之后，我们可以通过远程工具连接服务器来完成接下来的操作。
+   4. *手工安装 Git，并将本机的 SSH Key 注册到 GitHub 上的个人账户上。*
+   5. *签出我个人的 CentOS_Conf 仓库，并在相应目录下执行Make*
+	  #+begin_src sh
+        git clone git@github.com:ruleless/CentOS_Conf.git
+        cd CentOS_Conf
+        make
+	  #+end_src
+
+   执行完上面的操作之后，我们还需要手工安装一些必须得通过源码安装的软件。当前主要包括：
+   1. GNU Global
