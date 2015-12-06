@@ -1,0 +1,3 @@
+[submodule "emacscfg"]
+	path = emacscfg
+	url = git@github.com:ruleless/emacscfg.git
