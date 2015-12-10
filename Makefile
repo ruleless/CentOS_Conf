@@ -8,6 +8,7 @@ conf:
 	cp ./gitconf/.gitconfig ~/
 
 software:
+	yum install -y net-tools
 	yum install -y gcc gcc-g++
 	yum install -y clang
 	yum install -y emacs
