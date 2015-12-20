@@ -8,7 +8,7 @@
 
    	系统找到BIOS所指定的硬盘的MBR后，就会将其复制到0x7c00地址所在的物理内存中。其实被复制到物理内存的内容就是Boot Loader，而具体到你的电脑，那就是lilo或者grub了。
 
-*** 启动第三步(Boot Loader / Grup)
+*** 启动第三步(Boot Loader / Grub)
    	Boot Loader 就是在操作系统内核运行之前运行的一段小程序。通过这段小程序，我们可以初始化硬件设备、建立内存空间的映射图，从而将系统的软硬件环境带到一个合适的状态，以便为最终调用操作系统内核做好一切准备。
 
    	Boot Loader有若干种，其中Grub、lilo和spfdisk是常见的Loader。
@@ -23,16 +23,16 @@
    	系统将解压后的内核放置在内存之中，并调用start_kernel()函数来启动一系列的初始化函数并初始化各种设备，完成Linux核心环境的建立。至此，Linux内核已经建立起来了，基于Linux的程序应该可以正常运行了。
 
 *** 启动第五步(用户层init依据inittab文件来设定运行等级)
-   内核被加载后，第一个运行的程序便是/sbin/init，该文件会读取/etc/inittab文件，并依据此文件来进行初始化工作。
+	内核被加载后，第一个运行的程序便是/sbin/init，该文件会读取/etc/inittab文件，并依据此文件来进行初始化工作。
 
-   其实/etc/inittab文件最主要的作用就是设定Linux的运行等级，其设定形式是“:id:5:initdefault:”，这就表明Linux需要运行在等级5上。Linux的运行等级设定如下：
-   * 0: 关机
-   * 1: 单用户模式
-   * 2：无网络支持的多用户模式
-   * 3：有网络支持的多用户模式
-   * 4：保留，未使用
-   * 5：有网络支持有X-Window支持的多用户模式
-   * 6：重新引导系统，即重启
+	其实/etc/inittab文件最主要的作用就是设定Linux的运行等级，其设定形式是“:id:5:initdefault:”，这就表明Linux需要运行在等级5上。Linux的运行等级设定如下：
+    * 0: 关机
+    * 1: 单用户模式
+    * 2：无网络支持的多用户模式
+    * 3：有网络支持的多用户模式
+    * 4：保留，未使用
+    * 5：有网络支持有X-Window支持的多用户模式
+    * 6：重新引导系统，即重启
 
 *** 启动第六步(init进程执行rc.sysinit)
 	在设定了运行等级后，Linux系统执行的第一个用户层文件就是/etc/rc.d/rc.sysinit脚本程序，它做的工作非常多，包括设定PATH、设定网络配置（/etc/sysconfig/network）、启动swap分区、设定/proc等等。如果你有兴趣，可以到/etc/rc.d中查看一下rc.sysinit文件，里面的脚本够你看几天的。
@@ -124,11 +124,6 @@
 
 	另外需要说明的是，很多系统镜像在安装完成后默认是没有开启网络功能的，我们需要配置并开启网络功能后才能执行此步操作。
 ** 网络配置和管理
-   安装 CentOS 7 时，选择了 minimal install 的话，是没有安装网络组件的。所以，ifconfig 之类的命令式没有的，在配置好网络功能后可以通过如下命令来安装网络组件：
-   #+begin_src sh
-     yum install -y net-tools
-   #+end_src
-   另外也可以用 ip 命令来替代 ifconfig 使用。
 *** 配置IP地址
 	目录/etc/sysconfig/network-scripts下有名为ifcfg-eth0的脚本，它配置了网络接口eth0的各项属性
 	#+begin_src sh
@@ -151,14 +146,28 @@
       nameserver 202.96.128.166
       nameserver 202.96.134.133
 	#+end_src
-	初始时，该文件为空，所以，如果我们在一开始就将网络接口配置为 static 方式(见 /etc/sysconfig/network-scripts/ifcfg-etho0 文件的 BOOTPROTO 选项)，那么，我们还是不能访问外网。所以，我们可以先将 BOOTPROTO 选项配置为 dhcp，等到我们执行 /etc/init.d/network restart 命令自动生成了 DNS 服务器地址后，再将 BOOTPROTO 改为 static。
-*** 主机名称配置
-	vi /etc/sysconfig/network
+	在 dhcp 模式下我们不用关注该文件，因为会系统会自动帮我们找到合适的DNS域名服务器；但在 static 模式下，我们就需要自己来维护该脚本了。
+*** 主机名称配置及IP映射
+	一般来说，我们可以通过文件 /etc/sysconfig/network 来永久地配置本机的主机名称，内容如下：
 	#+begin_src sh
       NETWORKING=yes
-      HOSTNAME=liuy
+      HOSTNAME=centos66
+	#+end_src
+
+	不过在 CentOS7 中，主机名称的配置放到了 /etc/hostname 文件中。
+
+	在完成上面的配置之后，我们的主机名称除了能在命令提示符中显示之外，似乎没有其他用处。我们希望主机名能替代具体的IP地址来使用，这就需要将主机名映射到具体的IP地址了。主机在请求域名解析服务的时候会先查看本机的 /etc/hosts 文件，如果请求的域名在该文件中有匹配行，那就直接返回该匹配行中的IP地址。/etc/hosts 文件中的内容形如：
+	#+begin_src sh
+      127.0.0.1   rhel
+      ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 	#+end_src
 *** 常用命令
+**** 注意事项
+	 安装 CentOS 7 时，选择了 minimal install 的话，是没有安装网络组件的。所以，ifconfig 之类的命令式没有的，在配置好网络功能后可以通过如下命令来安装网络组件：
+     #+begin_src sh
+       yum install -y net-tools
+     #+end_src
+	 另外也可以用 ip 命令来替代 ifconfig 使用。
 **** /etc/init.d/network restart
 	 若重新配置了IP和DNS可使用该命令使修改生效。
 **** netstat
@@ -330,8 +339,8 @@
 ** 总结
    CentOS 是目前生产环境中常用的服务器系统，本文从开发人员角度出发，旨在构建基于 CentOS 7 的开发环境。本文所涉及的各个操作，步骤总结如下：
    * step 1. *网络配置。* CentOS 7 在 minimal 模式下安装完成时默认是关闭了网络功能的，我们需要将其打开并配置好网络地址，以便完成接下来的操作。
-   * step 2. *添加普通用户。* 就算是自己用来练习的操作系统也不要总是工作在 root 用户下，一是可以避免误操作，二是在生产环境下大部分人都没有服务器的根用户密码。添加了普通用户之后，我们可以通过远程工具连接服务器来完成接下来的操作。
-   * step 3. *yum 镜像地址设置。* 此步骤为可选，但在大陆使用原始的国外镜像地址貌似有点慢，所以强烈推荐使用国内镜像。
+   * step 2. *yum 镜像地址设置。* 此步骤为可选，但在大陆使用原始的国外镜像地址貌似有点慢，所以强烈推荐使用国内镜像。
+   * step 3. *添加普通用户。* 就算是自己用来练习的操作系统也不要总是工作在 root 用户下，一是可以避免误操作，二是在生产环境下大部分人都没有服务器的根用户密码。添加了普通用户之后，我们可以通过远程工具连接服务器来完成接下来的操作。
    * step 4. *手工安装 Git，并将本机的 SSH Key 注册到 GitHub 上的个人账户上。*
    * step 5. *签出我个人的 CentOS_Conf 仓库* 地址: https://github.com/ruleless/CentOS_Conf ，该仓库下有我已经写好的 Makefile 安装脚本，执行 Make 即可进入自动安装。
 
