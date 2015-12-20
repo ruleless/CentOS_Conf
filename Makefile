@@ -9,7 +9,9 @@ conf:
 
 software:
 	yum install -y net-tools
-	yum install -y gcc gcc-c++
+	yum install -y gcc
+	yum install -y gcc-c++
+	yum install -y ncurses-devel
 	yum install -y clang
 	yum install -y emacs
 
