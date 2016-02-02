@@ -16,6 +16,7 @@ install:
 	yum install -y ncurses-devel
 	yum install -y clang
 	yum install -y emacs
+	yum install -y samba # 远程文件传输服务
 
 # for emacs
 emacs:
