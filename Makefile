@@ -1,13 +1,15 @@
-.Phony:all
-all:conf software
+dirs:=bash gitconf
 
-conf:
-	cp ./bash/.bash_profile ~/
-	cp ./bash/.bashrc ~/
-	cp ./bash/.bash_logout ~/
-	cp ./gitconf/.gitconfig ~/
+.PHONY:default config install emacs emacsdep
+default:config
 
-software:
+include ./build.mak
+
+# only copy configration files
+config:all
+
+# install common software
+install:
 	yum install -y net-tools
 	yum install -y gcc
 	yum install -y gcc-c++
@@ -15,6 +17,7 @@ software:
 	yum install -y clang
 	yum install -y emacs
 
+# for emacs
 emacs:
 	cd emacscfg && $(MAKE)
 
