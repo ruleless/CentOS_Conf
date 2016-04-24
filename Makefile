@@ -9,18 +9,19 @@ include ./build.mak
 config:all
 
 # install common software
+centos7:install
+	yum install -y clang
+	yum install -y emacs
+
+centos6:install
+
 install:
 	yum install -y net-tools
 	yum install -y gcc
 	yum install -y gcc-c++
 	yum install -y ncurses-devel
-	yum install -y clang
-	yum install -y emacs
 	yum install -y samba # 远程文件传输服务
 
-# for emacs
-emacs:
-	cd emacscfg && $(MAKE)
 
 emacsdep:
 	yum -y groupinstall "Development Tools"
