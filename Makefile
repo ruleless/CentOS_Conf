@@ -21,6 +21,7 @@ install:
 	yum install -y gcc-c++
 	yum install -y ncurses-devel
 	yum install -y samba # 远程文件传输服务
+	yum install -y pcre-devel openssl openssl-devel # for nginx
 
 
 emacsdep:
