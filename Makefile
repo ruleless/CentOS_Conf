@@ -24,6 +24,7 @@ install:
 	yum install -y pcre-devel openssl openssl-devel # for nginx
 
 
+# 安装Emacs24.3的依赖软件
 emacsdep:
 	yum -y groupinstall "Development Tools"
 	yum -y install gtk+-devel gtk2-devel
@@ -35,3 +36,10 @@ emacsdep:
 	yum -y install gpm-devel dbus-devel dbus-glib-devel dbus-python
 	yum -y install GConf2-devel pkgconfig
 	yum -y install libXft-devel
+
+
+# 安装KBE的依赖软件
+kbedep:
+	yum -y install openssl-devel
+	yum -y install mysql-server
+	yum -y install mysql-devel
