@@ -4,7 +4,7 @@
 ## 3. 添加各项规则
 
 ICMP_TYPE:=0 3 4 8 11 12 14 16 18
-SERVICES:=445 443 80 21 5080 1080
+SERVICES:=445 443 80 21 5080 1080 29900
 
 open:clean_t policy_t rule_t
 close:clean_t
