@@ -17,3 +17,7 @@ QueueTest
 GPATH
 GRTAGS
 GTAGS
+server_linux_amd64
+client_linux_amd64
+*.log
+*.tar.gz
