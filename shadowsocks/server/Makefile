@@ -4,17 +4,17 @@ all:
 	@echo "config? start? or stop?"
 
 config:
-	cp ./ss-config.json /etc
-	cp ./shadowsocks-libev /etc/init.d
-	chkconfig --add shadowsocks-libev
-	chkconfig --list shadowsocks-libev
+	cp ./sssd-config.json /etc
+	cp ./sssd /etc/init.d
+	chkconfig --add sssd
+	chkconfig --list sssd
 # echo "/usr/local/bin/ss-server -c /etc/config.json -f /tmp/ss-server.pid" >> /etc/rc.local
 
 start:
-	service shadowsocks-libev start
+	service sssd start
 
 stop:
-	service shadowsocks-libev stop
+	service sssd stop
 
 dep:
 	yum install build-essential autoconf libtool openssl-devel gcc asciidoc xmlto -y

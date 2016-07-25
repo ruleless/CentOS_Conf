@@ -1,11 +1,17 @@
 
-.PHONY:all start stop
+.PHONY:all config start stop
 all:
-	@echo "start? or stop?"
+	@echo "config? start? or stop?"
+
+config:
+	cp ./ssc-config.json /etc
+	cp ./sscd /etc/init.d
+	chkconfig --add sscd
+	chkconfig --list sscd
+# echo "/usr/local/bin/ss-server -c /etc/config.json -f /tmp/ss-server.pid" >> /etc/rc.local
 
 start:
-	./stop.sh
-	/usr/local/bin/ss-local -v -c ./config.json
+	service sscd start
 
 stop:
-	./stop.sh
+	service sscd stop
