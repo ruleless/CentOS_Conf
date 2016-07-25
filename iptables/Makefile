@@ -5,13 +5,14 @@
 
 ICMP_TYPE:=0 3 4 8 11 12 14 16 18
 SERVICES:=445 443 80 21 5080 1080 29900
+SERVICES_UDP:=29900
 
 open:clean_t policy_t rule_t
 close:clean_t
 show:show_t
 
 # 总规则
-rule_t:first_rule_t lo_rule_t icmp_rule_t ssh_rule_t mine_rule_t last_rule_t
+rule_t:first_rule_t lo_rule_t icmp_rule_t ssh_rule_t mine_rule_t udp_rule_t last_rule_t
 
 first_rule_t:
 	iptables -t filter -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -31,6 +32,11 @@ ssh_rule_t:
 mine_rule_t:
 	for port in $(SERVICES); \
 		do iptables -t filter -A INPUT -p tcp -m state --state NEW -m tcp --dport $$port -j ACCEPT; \
+	done
+
+udp_rule_t:
+	for port in $(SERVICES_UDP); \
+		do iptables -t filter -A INPUT -p udp --dport  $$port --sport 1024:65534 -j ACCEPT; \
 	done
 
 last_rule_t:
